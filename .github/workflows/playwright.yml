@@ -1,27 +1,72 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test --reporter=html
+        env:
+          ENV: qa
+
+      - name: Archive Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  notify:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Playwright report
+        uses: actions/download-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/
+
+      - name: Send email notification with HTML report
+        uses: dawidd6/action-send-mail@v3
+        if: always()
+        continue-on-error: true
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          security: tls
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Playwright Test Results - ${{ job.status }}
+          body: |
+            Playwright Test Results Summary
+            Status: ${{ job.status }}
+            Workflow: ${{ github.workflow }}
+            Run ID: ${{ github.run_id }}
+            See the attached HTML report for details.
+          to: jagadeeshsingaravel01@gmail.com
+          from: Playwright Tests <${{ secrets.EMAIL_USERNAME }}>
+          attachments: playwright-report/*
+

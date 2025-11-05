@@ -1,21 +1,16 @@
-import fs from "fs";
-import path from "path";
+const fs = require('fs');
+const path = require('path');
 
-export function loadEnv(envName = "dev") {
-  try {
-    const envPath = path.resolve(`./env/${envName}.json`);
+function getEnvConfig() {
+    const env = process.env.ENV || 'qa';
 
-    if (!fs.existsSync(envPath)) {
-      throw new Error(`❌ Environment file not found: ${envPath}`);
+    const envFilePath = path.join(__dirname, '..', 'env', `${env}.json`);
+
+    if (!fs.existsSync(envFilePath)) {
+        throw new Error(`Environment file not found: ${envFilePath}`);
     }
 
-    const rawData = fs.readFileSync(envPath);
-    const parsed = JSON.parse(rawData);
-
-    return parsed;
-  } catch (error) {
-    console.error(`❌ Failed to load environment: ${envName}`);
-    console.error(error.message);
-    process.exit(1);
-  }
+    return JSON.parse(fs.readFileSync(envFilePath, 'utf-8'));
 }
+
+module.exports = { getEnvConfig };

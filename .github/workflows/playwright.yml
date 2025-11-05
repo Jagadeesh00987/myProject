@@ -56,20 +56,17 @@ jobs:
         with:
           server_address: smtp.gmail.com
           server_port: 587
-          security: tls
-          # Use App Password instead of regular password
+          secure: false                     # use false for port 587 (STARTTLS)
           username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
+          password: ${{ secrets.EMAIL_APP_PASSWORD }}  # must be Gmail App Password
           subject: Playwright Test Results - ${{ github.repository }}
           html_body: |
             <h2>Playwright Test Results Summary</h2>
             <p><strong>Status:</strong> ${{ job.status }}</p>
             <p><strong>Workflow:</strong> ${{ github.workflow }}</p>
-            <p><strong>Run ID:</strong> ${{ github.run_id }}</p>
-            <p><strong>Repository:</strong> ${{ github.repository }}</p>
             <p>See the attached HTML report for details.</p>
           to: jagadeeshsingaravel01@gmail.com
-          from: GitHub Actions <${{ secrets.EMAIL_USERNAME }}>
+          from: "GitHub Actions <${{ secrets.EMAIL_USERNAME }}>"
           attachments: playwright-report/index.html
           convert_markdown: true
           priority: high

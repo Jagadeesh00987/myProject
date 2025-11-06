@@ -1,7 +1,8 @@
 const{test,expect}=require('playwright/test');
 const{LoginPage}=require('../pages/login.js');
 const { getEnvConfig } = require('../utils/envManager.js');
-const loginTestData = JSON.parse(JSON.stringify(require('../utils/loginTestData.json')));
+const loginTestData = JSON.parse(JSON.stringify(require('../Test-Data/loginTestData.json')));
+const logindata = JSON.parse(JSON.stringify(require('../Test-Data/logindata.json')));
 
 const env = getEnvConfig();
 
@@ -23,4 +24,13 @@ test.describe('Login Test',()=>{
         // Add your assertions here
         await loginPage.saveAuthState(context);
     });
+
+for (let data of logindata) {
+  test.only(`Invalid Login Test - ${data.testCase || data.username || 'MissingName'}`, async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.login(data.username, data.password);
+  });
+}
+
+
 });

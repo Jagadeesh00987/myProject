@@ -4,14 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "test:qa": "cross-env ENV=qa npx playwright test --project=chromium --reporter=html",
-  "test:qa:headed": "cross-env ENV=qa npx playwright test --headed --project=chromium --reporter=html",
-
-  "test:dev": "cross-env ENV=dev npx playwright test",
-  "test:prod": "cross-env ENV=prod npx playwright test",
-
-  "test": "npx playwright test"
-},
+    "test:qa": "cross-env ENV=qa npx playwright test --project=chromium --reporter=html",
+    "test:qa:headed": "cross-env ENV=qa npx playwright test --headed --project=chromium --reporter=html",
+    "test:dev": "cross-env ENV=dev npx playwright test",
+    "test:prod": "cross-env ENV=prod npx playwright test",
+    "test": "npx playwright test"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

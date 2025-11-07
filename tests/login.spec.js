@@ -26,7 +26,7 @@ test.describe('Login Test',()=>{
     });
 
 for (let data of logindata) {
-  test.only(`Invalid Login Test - ${data.testCase || data.username || 'MissingName'}`, async ({ page }) => {
+  test(`Invalid Login Test - ${data.testCase || data.username || 'MissingName'}`, async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login(data.username, data.password);
   });

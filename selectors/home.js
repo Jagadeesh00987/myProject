@@ -1,6 +1,10 @@
 class homeSelectors{
 
     static homeIcon='button[class="btn btn-custom"]';
-    static signOut="//button[normalize-space()='Sign Out']";
+    static heading="text=Automation";
+    static filters="input[placeholder='search']";
+    static product=".card-body";
+    static addtoCart="text= Add To Cart";
+
 }
 module.exports={homeSelectors};

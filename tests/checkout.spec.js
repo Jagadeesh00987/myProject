@@ -8,13 +8,13 @@ const env = getEnvConfig();
 test.use({ browserName: 'chromium' });
 
 test.describe('Cart and Checkout Test',()=>{
-    test('product name verification',async({page})=>{
+    test.only('product name verification',async({page})=>{
 
         const productText="ZARA COAT 3";
         const homePageInstance=new homePage(page);
         await homePageInstance.goto();
         const productName=await homePageInstance.homePageproduct(productText);
-
+await page.pause();
         const checkoutpage=new checkoutPage(page);
         await checkoutpage.goToCart();
         const name=await checkoutpage.CartPage();

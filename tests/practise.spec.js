@@ -1,54 +1,50 @@
 const{test,expect}=require('@playwright/test');
 
-test("Page",async({page})=>{
+test("Select dynamic RedBus suggestion", async ({ page }) => {
 
-await page.goto("https://www.redbus.in/")
-//await expect(page).toHaveTitle(/RedBus/);
-await page.waitForLoadState('domcontentloaded');
- await page.locator("div[class*='labelCityWrapper___fd5744'] >> text=From").first().click();
-// await page.getByRole('textbox', { name: 'From' }).fill('Chennai');
-// await page.waitForTimeout(5000);
+  await page.goto("https://redbus.in");
 
-//const sugg= aria-label='Search suggestions list'
+  await page.getByRole('button', { name: 'From' }).click();
+  await page.getByRole('textbox', { name: 'From' }).fill('chennai');
 
-// const suggestions=await page.locator("div[class='listHeader___90a8b7']");
-// const listOfNames= await suggestions.allTextContents();
-// console.log(listOfNames);
+  // Get all suggestions as array
+  const listOfNames = await page.locator("//div[@role='option']").allTextContents();
+  console.log(listOfNames);
 
-// for(let name of listOfNames){
-// if(name.includes("Perungalathur")){
+  // Get locator for selecting elements
+  const options = page.locator("//div[@role='option']");
+  const total = await options.count();
 
-//     await page.locator("[role='heading'] div[class='listHeader___90a8b7']", { hasText: "Perungalathur" }).click();
-//     break;  
-// }
+  for (let i = 0; i < total; i++) {
+    const text = await options.nth(i).textContent();
 
-//class="srcDest___aa6db3"
-
-//class="searchCategory___993266"
-//}
-// await page.pause();
-// Type into FROM field
-await page.getByRole('textbox', { name: 'From' }).fill('Chennai');
-
-// Wait for suggestion list to appear
-const suggestions = page.locator("div[class='searchCategory___993266']").locator(".leftListCont___9ce83f").locator(".listHeader___90a8b7");
-
-// Get suggestion count`
-const count = await suggestions.count();
-
-console.log("Suggestions found:", count);
-
-// Iterate all suggestions
-for (let i = 0; i < count; i++) {
-  const text = await suggestions.nth(i).innerText();
-
-  console.log("Suggestion:", text);
-
-  if (text.includes("")) {
-    await suggestions.nth(i).click();
-    console.log("Clicked:", text);
-    break;
+    if (text.includes("Perungalathur")) {
+      await options.nth(i).click();
+      break;
+    }
   }
-}
+
+  await page.getByRole('button', { name: 'To' }).first().click();
+  await page.getByRole('textbox', { name: 'To' }).first().fill('vilupuram');
+
+  // Get all suggestions as array
+  const listOfNames2 = await page.locator("//div[@role='option']").allTextContents();
+  console.log(listOfNames2);
+
+  // Get locator for selecting elements
+  const options2 = page.locator("//div[@role='option']");
+  const total2 = await options2.count();
+
+  for (let i = 0; i < total2; i++) {
+    const text = await options2.nth(i).textContent();
+
+    if (text.includes("vilupuram")) {
+      await options2.nth(i).click();
+      break;
+    }
+  } 
+
+
 await page.pause();
-})
+
+});
